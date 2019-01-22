@@ -6,9 +6,9 @@ import (
     "os"
     "strings"
     //"github.com/temp25/hotstar-dl/helper"
-    "github.com/temp25/hotstar-dl/urlretriever"
+    "github.com/temp25/hdl/urlretriever"
     //"text/tabwriter"
-    "github.com/temp25/hotstar-dl/videoutil"
+    "github.com/temp25/hdl/videoutil"
 
     //"bytes"
     //"io"

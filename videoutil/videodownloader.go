@@ -1,8 +1,8 @@
 package videoutil
 
 import (
-   "github.com/temp25/hotstar-dl/helper"
-   "github.com/temp25/hotstar-dl/urlretriever"
+   "github.com/temp25/hdl/helper"
+   "github.com/temp25/hdl/urlretriever"
    "fmt"
    "text/tabwriter"
    "io"

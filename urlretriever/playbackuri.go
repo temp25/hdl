@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"encoding/json"
         "fmt"
-	"github.com/temp25/hotstar-dl/helper"
+	"github.com/temp25/hdl/helper"
 )
 
 func GetPlaybackUri(videoUrlPageContents string, videoUrl string) (string, map[string]string) {

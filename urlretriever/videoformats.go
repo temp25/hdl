@@ -5,7 +5,7 @@ import (
 	"strings"
 	"regexp"
 	"strconv"
-	"github.com/temp25/hotstar-dl/helper"
+	"github.com/temp25/hdl/helper"
 	"fmt"
 	"sort"
 )
