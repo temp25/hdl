@@ -69,17 +69,8 @@ func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string
 		// handle error
 		panic(err)
 	}
-
-	/*
-		for k := range videoFormats {
-			trimmedKey := strings.TrimPrefix(k, "hls-")
-			if intKey, err := strconv.Atoi(trimmedKey); err == nil {
-				keys = append(keys, intKey)
-			}
-
-		}
-	*/
-	sort.Ints(videoFormatKeys) //keys)
+	
+	sort.Ints(videoFormatKeys)
 
 	return videoFormats, videoFormatKeys
 
