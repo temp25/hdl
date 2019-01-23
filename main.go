@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
-	"strings"
 	"github.com/temp25/hdl/urlretriever"
 	"github.com/temp25/hdl/videoutil"
-	"net/url"
 	"log"
+	"net/url"
+	"os"
+	"strings"
 )
 
 //flag descriptions
@@ -81,7 +81,7 @@ func main() {
 			fmt.Println("Invalid url scheme please enter valid one")
 			os.Exit(-1)
 		}
-		
+
 		videoUrl = fmt.Sprintf("%v", parsedUrl)
 
 		fmt.Println("Parsed video url is", parsedUrl)

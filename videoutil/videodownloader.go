@@ -130,7 +130,7 @@ func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, videoId st
 			if errStdout != nil || errStderr != nil {
 				log.Fatal("failed to capture stdout or stderr\n")
 			}
-			
+
 			os.Exit(0)
 
 		} else {

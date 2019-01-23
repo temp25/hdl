@@ -69,7 +69,7 @@ func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string
 		// handle error
 		panic(err)
 	}
-	
+
 	sort.Ints(videoFormatKeys)
 
 	return videoFormats, videoFormatKeys
