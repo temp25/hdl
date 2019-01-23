@@ -5,7 +5,7 @@ import (
 )
 
 func GetMasterPlaybackUrl(playbackUriPageContents string) string {
-	
+
 	var masterPlaybackUrl string
 	var result map[string]interface{}
 	json.Unmarshal([]byte(playbackUriPageContents), &result)

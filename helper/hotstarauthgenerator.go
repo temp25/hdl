@@ -1,11 +1,11 @@
 package helper
 
 import (
-	"fmt"
-	"time"
-	"encoding/hex"
 	"crypto/hmac"
 	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"time"
 )
 
 func GenerateHotstarAuth() string {
@@ -22,8 +22,8 @@ func GenerateHotstarAuth() string {
 	}
 
 	hmacInstance := hmac.New(sha256.New, hexedAkamaiEncryptionKey)
-	hmacInstance.Write( []byte(message) )
-	hmacedMessage := hex.EncodeToString( hmacInstance.Sum(nil) )
+	hmacInstance.Write([]byte(message))
+	hmacedMessage := hex.EncodeToString(hmacInstance.Sum(nil))
 
 	return fmt.Sprintf("%s~hmac=%s", message, hmacedMessage)
 }

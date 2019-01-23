@@ -2,26 +2,26 @@ package helper
 
 import (
 	"fmt"
-	"net/http"
 	"io/ioutil"
+	"net/http"
 )
 
 var requestHeaders = map[string]string{
-	"Hotstarauth": GenerateHotstarAuth(),
-	"X-Country-Code": "IN",
+	"Hotstarauth":     GenerateHotstarAuth(),
+	"X-Country-Code":  "IN",
 	"X-Platform-Code": "JIO",
 }
 
 func checkIfError(err error) {
-	if err!=nil {
+	if err != nil {
 		panic(err)
 	}
 }
 
-func GetPageContents(url string, hasHeaders bool) string{
-	
+func GetPageContents(url string, hasHeaders bool) string {
+
 	request, err := http.NewRequest("GET", url, nil)
-	
+
 	checkIfError(err)
 
 	if hasHeaders {

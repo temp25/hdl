@@ -1,23 +1,23 @@
 package main
 
 import (
-    "flag"
-    "fmt"
-    "os"
-    "strings"
-    //"github.com/temp25/hotstar-dl/helper"
-    "github.com/temp25/hdl/urlretriever"
-    //"text/tabwriter"
-    "github.com/temp25/hdl/videoutil"
-    "net/url"
+	"flag"
+	"fmt"
+	"os"
+	"strings"
+	//"github.com/temp25/hotstar-dl/helper"
+	"github.com/temp25/hdl/urlretriever"
+	//"text/tabwriter"
+	"github.com/temp25/hdl/videoutil"
+	"net/url"
 
-    //"bytes"
-    //"io"
-    //"os/exec"
-    "log"
-    //"reflect"
-    //"strconv"
-    //"time"
+	//"bytes"
+	//"io"
+	//"os/exec"
+	"log"
+	//"reflect"
+	//"strconv"
+	//"time"
 )
 
 var helpFlagDesc = "Prints this help and exit"
@@ -36,27 +36,27 @@ var metadataFlag = flag.Bool("add-metadata", false, metadataFlagDesc)
 var outputFileNameFlag = flag.String("output", "", outputFileNameFlagDesc)
 
 func init() {
-    
-    //shorthand notations
-    flag.BoolVar(helpFlag, "h", false, helpFlagDesc)
-    flag.BoolVar(listFormatsFlag, "l", false, listFormatsFlagDesc)
-    flag.StringVar(formatFlag, "f", "", formatFlagDesc)
-    flag.BoolVar(metadataFlag, "m", false, metadataFlagDesc)
-    flag.StringVar(outputFileNameFlag, "o", "", outputFileNameFlagDesc)
 
-    //custom flag usage
-    flag.Usage = func() {
-        fmt.Fprintf(os.Stdout, "Usage: %s [OPTIONS] URL\n\n", os.Args[0])
-        fmt.Println("Options:")
-        fmt.Fprintf(os.Stdout, "-h, --help\t\t%s\n", helpFlagDesc)
-        fmt.Fprintf(os.Stdout, "-l, --list\t\t%s\n", listFormatsFlagDesc)
-        fmt.Fprintf(os.Stdout, "-f, --format\t\t%s\n", formatFlagDesc)
-        fmt.Fprintf(os.Stdout, "--ffmpeg-location\t%s\n", ffmpegPathFlagDesc)
-        fmt.Fprintf(os.Stdout, "-m, --add-metadata\t%s\n", metadataFlagDesc)
-        fmt.Fprintf(os.Stdout, "-o, --output\t\t%s\n", outputFileNameFlagDesc)
-        os.Exit(0)
-        //flag.PrintDefaults()
-    }
+	//shorthand notations
+	flag.BoolVar(helpFlag, "h", false, helpFlagDesc)
+	flag.BoolVar(listFormatsFlag, "l", false, listFormatsFlagDesc)
+	flag.StringVar(formatFlag, "f", "", formatFlagDesc)
+	flag.BoolVar(metadataFlag, "m", false, metadataFlagDesc)
+	flag.StringVar(outputFileNameFlag, "o", "", outputFileNameFlagDesc)
+
+	//custom flag usage
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stdout, "Usage: %s [OPTIONS] URL\n\n", os.Args[0])
+		fmt.Println("Options:")
+		fmt.Fprintf(os.Stdout, "-h, --help\t\t%s\n", helpFlagDesc)
+		fmt.Fprintf(os.Stdout, "-l, --list\t\t%s\n", listFormatsFlagDesc)
+		fmt.Fprintf(os.Stdout, "-f, --format\t\t%s\n", formatFlagDesc)
+		fmt.Fprintf(os.Stdout, "--ffmpeg-location\t%s\n", ffmpegPathFlagDesc)
+		fmt.Fprintf(os.Stdout, "-m, --add-metadata\t%s\n", metadataFlagDesc)
+		fmt.Fprintf(os.Stdout, "-o, --output\t\t%s\n", outputFileNameFlagDesc)
+		os.Exit(0)
+		//flag.PrintDefaults()
+	}
 
 }
 
@@ -89,104 +89,102 @@ func getDateStr(t int64) string {
 */
 
 func main() {
-    flag.Parse()
+	flag.Parse()
 
-    flagCount := len(flag.Args())
-    //fmt.Println("flag_args :", flag.Args())
-    //fmt.Println("flagLen :", flagLen)
+	flagCount := len(flag.Args())
+	//fmt.Println("flag_args :", flag.Args())
+	//fmt.Println("flagLen :", flagLen)
 
-    /*for index, flag_args := range flag.Args() {
-        fmt.Println("flag_args :", flag_args)
-    }*/
+	/*for index, flag_args := range flag.Args() {
+	    fmt.Println("flag_args :", flag_args)
+	}*/
 
-    /*fmt.Println("helpFlag :",*helpFlag)
-    fmt.Println("listFormatsFlag :",*listFormatsFlag)
-    fmt.Println("formatFlag :",*formatFlag)
-    fmt.Println("ffmpegPathFlag :",*ffmpegPathFlag)
-    fmt.Println("metadataFlag :",*metadataFlag)*/
+	/*fmt.Println("helpFlag :",*helpFlag)
+	  fmt.Println("listFormatsFlag :",*listFormatsFlag)
+	  fmt.Println("formatFlag :",*formatFlag)
+	  fmt.Println("ffmpegPathFlag :",*ffmpegPathFlag)
+	  fmt.Println("metadataFlag :",*metadataFlag)*/
 
-    
-    if *helpFlag {
-        flag.Usage()
-    } else if flagCount == 0 {
-        fmt.Println("Must provide atleast one url at end")
-        flag.Usage()
-        os.Exit(-1)
-    } else if flagCount > 1 {
-        fmt.Println("Url must be provided at end before options")
-        flag.Usage()
-        os.Exit(-1)
-    } else if videoUrl := flag.Args()[0]; videoUrl != "" {
-        parsedUrl, err := url.Parse(videoUrl)
-	if err != nil {
-		log.Fatal(err)
+	if *helpFlag {
+		flag.Usage()
+	} else if flagCount == 0 {
+		fmt.Println("Must provide atleast one url at end")
+		flag.Usage()
+		os.Exit(-1)
+	} else if flagCount > 1 {
+		fmt.Println("Url must be provided at end before options")
+		flag.Usage()
+		os.Exit(-1)
+	} else if videoUrl := flag.Args()[0]; videoUrl != "" {
+		parsedUrl, err := url.Parse(videoUrl)
+		if err != nil {
+			log.Fatal(err)
+		}
+		switch parsedUrl.Scheme {
+		case "":
+			fmt.Println("Replacing empty url scheme with https")
+			parsedUrl.Scheme = "https"
+		case "https":
+			//do nothing
+		case "http":
+			fmt.Println("Replacing http url scheme with https")
+			parsedUrl.Scheme = "https"
+		default:
+			fmt.Println("Invalid url scheme please enter valid one")
+			os.Exit(-1)
+		}
+
+		/*
+			        fmt.Println("parsedUrl.Scheme :", parsedUrl.Scheme)
+				fmt.Println("parsedUrl.Opaque :", parsedUrl.Opaque)
+				fmt.Println("parsedUrl.User :", parsedUrl.User)
+				fmt.Println("parsedUrl.Host :", parsedUrl.Host)
+				fmt.Println("parsedUrl.Path :", parsedUrl.Path)
+				fmt.Println("parsedUrl.RawPath :", parsedUrl.RawPath)
+				fmt.Println("parsedUrl.ForceQuery :", parsedUrl.ForceQuery)
+				fmt.Println("parsedUrl.RawQuery :", parsedUrl.RawQuery)
+				fmt.Println("parsedUrl.Fragment :", parsedUrl.Fragment)
+
+			        hostName := parsedUrl.Host
+			        if !strings.HasSuffix(hostName, "hotstar.com") {
+			           fmt.Print("Invalid host %s Please enter a valid hotstar url\n", hostName)
+			           os.Exit(-1)
+			        }
+		*/
+
+		videoUrl = fmt.Sprintf("%v", parsedUrl)
+
+		fmt.Println("Parsed video url is", parsedUrl)
+
+		isValidUrl, videoId := urlretriever.IsValidHotstarUrl(videoUrl)
+		if isValidUrl {
+			if *listFormatsFlag {
+				videoutil.ListFormatsOrDownloadVideo(false, videoUrl, videoId, *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
+			} else if *formatFlag != "" {
+				if !strings.HasPrefix(*formatFlag, "hls-") {
+					fmt.Println("Invalid format specified")
+					os.Exit(-1)
+				} else {
+					videoutil.ListFormatsOrDownloadVideo(true, videoUrl, videoId, *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
+				}
+			} else {
+				//Check for other flags if associated with url if any
+			}
+		} else {
+			fmt.Println("Invalid hotstar url. Please enter a valid one")
+			os.Exit(-1)
+		}
+
+	} else {
+		fmt.Println("Invalid args specified")
+		flag.Usage()
 	}
-	switch parsedUrl.Scheme {
-	    case "": 
-	                fmt.Println("Replacing empty url scheme with https")
-	                parsedUrl.Scheme = "https"
-	    case "https":
-	                //do nothing
-	    case "http" : 
-	                fmt.Println("Replacing http url scheme with https")
-	                parsedUrl.Scheme = "https"
-	   default : 
-	           fmt.Println("Invalid url scheme please enter valid one")
-	           os.Exit(-1)
-	}
-	
-        /*
-        fmt.Println("parsedUrl.Scheme :", parsedUrl.Scheme)
-	fmt.Println("parsedUrl.Opaque :", parsedUrl.Opaque)
-	fmt.Println("parsedUrl.User :", parsedUrl.User)
-	fmt.Println("parsedUrl.Host :", parsedUrl.Host)
-	fmt.Println("parsedUrl.Path :", parsedUrl.Path)
-	fmt.Println("parsedUrl.RawPath :", parsedUrl.RawPath)
-	fmt.Println("parsedUrl.ForceQuery :", parsedUrl.ForceQuery)
-	fmt.Println("parsedUrl.RawQuery :", parsedUrl.RawQuery)
-	fmt.Println("parsedUrl.Fragment :", parsedUrl.Fragment)
 
-        hostName := parsedUrl.Host
-        if !strings.HasSuffix(hostName, "hotstar.com") {
-           fmt.Print("Invalid host %s Please enter a valid hotstar url\n", hostName)
-           os.Exit(-1)
-        }
-        */
-
-	videoUrl = fmt.Sprintf("%v", parsedUrl)
-
-        fmt.Println("Parsed video url is", parsedUrl)
-        
-        isValidUrl, videoId := urlretriever.IsValidHotstarUrl(videoUrl)
-        if isValidUrl {
-           if *listFormatsFlag {
-              videoutil.ListFormatsOrDownloadVideo(false, videoUrl, videoId, *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
-           } else if *formatFlag != "" {
-              if !strings.HasPrefix(*formatFlag, "hls-") {
-                 fmt.Println("Invalid format specified")
-                 os.Exit(-1)
-              } else {
-                 videoutil.ListFormatsOrDownloadVideo(true, videoUrl, videoId, *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
-              }
-           } else {
-              //Check for other flags if associated with url if any
-           }
-        } else {
-            fmt.Println("Invalid hotstar url. Please enter a valid one")
-            os.Exit(-1)
-        }
-
-    } else {
-       fmt.Println("Invalid args specified")
-       flag.Usage()
-    }
-    
-    
 }
 
 /*
 func listFormatsOrDownloadVideo(isOnlyDownload bool) {
-    
+
     videoUrl := flag.Args()[0]
 
     videoUrlPageContents := helper.GetPageContents(videoUrl, false)
@@ -221,7 +219,7 @@ func listFormatsOrDownloadVideo(isOnlyDownload bool) {
             } else {
                 fmt.Fprintf( tw, "%s\tmp4\t%s\t%s\t%s  %s fps\n", k, v["RESOLUTION"].(string), v["K-FORM"].(string),  v["CODECS"].(string), v["FRAME-RATE"].(string) )
             }
-            
+
         }
         tw.Flush()
         os.Exit(0)
@@ -252,7 +250,7 @@ func listFormatsOrDownloadVideo(isOnlyDownload bool) {
             metaArgs := []string{}
             metaArgs = append(metaArgs, "-i")
             metaArgs = append(metaArgs, streamUrl)
-            
+
             if *metadataFlag {
                 for k2, v2 := range metadata {
                      metaArgs = append(metaArgs, "-metadata")
@@ -265,12 +263,12 @@ func listFormatsOrDownloadVideo(isOnlyDownload bool) {
             metaArgs = append(metaArgs, "copy")
             metaArgs = append(metaArgs, "-y")
             metaArgs = append(metaArgs, outputFileName)
-            
+
             cmd := exec.Command(ffmpegLocation, metaArgs...)
 
             stdoutIn, _ := cmd.StdoutPipe()
             stderrIn, _ := cmd.StderrPipe()
-        
+
             var errStdout, errStderr error
             stdout := io.MultiWriter(os.Stdout, &stdoutBuf)
             stderr := io.MultiWriter(os.Stderr, &stderrBuf)
@@ -278,15 +276,15 @@ func listFormatsOrDownloadVideo(isOnlyDownload bool) {
             if err != nil {
                 log.Fatalf("cmd.Start() failed with '%s'\n", err)
             }
-        
+
             go func() {
                 _, errStdout = io.Copy(stdout, stdoutIn)
             }()
-        
+
             go func() {
                 _, errStderr = io.Copy(stderr, stderrIn)
             }()
-        
+
             err = cmd.Wait()
             if err != nil {
                 log.Fatalf("cmd.Run() failed with %s\n", err)
@@ -306,5 +304,3 @@ func listFormatsOrDownloadVideo(isOnlyDownload bool) {
 
 }
 */
-
-

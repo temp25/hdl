@@ -2,86 +2,85 @@ package urlretriever
 
 import (
 	"bufio"
-	"strings"
-	"regexp"
-	"strconv"
-	"github.com/temp25/hdl/helper"
 	"fmt"
+	"github.com/temp25/hdl/helper"
+	"regexp"
 	"sort"
+	"strconv"
+	"strings"
 )
 
 func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string) (map[string]interface{}, []int) {
 
 	videoFormats := make(map[string]interface{})
-        info := make(map[string]interface{})
-        videoFormatKeys := make([]int, 0, len(videoFormats))
+	info := make(map[string]interface{})
+	videoFormatKeys := make([]int, 0, len(videoFormats))
 	scanner := bufio.NewScanner(strings.NewReader(masterPlaybackPageContents))
-    m3u8InfoRegex := regexp.MustCompile(`([\w\-]+)\=([\w\-]+|"[^"]*")`)
-	
+	m3u8InfoRegex := regexp.MustCompile(`([\w\-]+)\=([\w\-]+|"[^"]*")`)
+
 	for scanner.Scan() {
 		line := scanner.Text()
-		
-		
-		if(strings.HasPrefix(line, "#EXT-X-STREAM-INF")){
-		    line := strings.Replace(line, "#EXT-X-STREAM-INF:", "", -1)
-		    m3u8Info := m3u8InfoRegex.FindAllStringSubmatch(line, -1)
-		    
-		    for index, _ := range m3u8Info {
-		        info[m3u8Info[index][1]] = m3u8Info[index][2];
-		    }
-		    
-		}else if(strings.HasPrefix(line, "master") || strings.HasPrefix(line, "http")){
-		    
-		    averageBandwidthOrBandwidth := func() int{
-		    	var bw string
-		    	if info["AVERAGE-BANDWIDTH"] != nil {
-		    			bw = info["AVERAGE-BANDWIDTH"].(string)
-		    	} else {
-		    		bw = info["BANDWIDTH"].(string)
-		    	}
-		    	var bwInt, _ = strconv.Atoi(bw)
-		    	return bwInt
-		    }()
 
-		    kFactor := averageBandwidthOrBandwidth/1000
+		if strings.HasPrefix(line, "#EXT-X-STREAM-INF") {
+			line := strings.Replace(line, "#EXT-X-STREAM-INF:", "", -1)
+			m3u8Info := m3u8InfoRegex.FindAllStringSubmatch(line, -1)
 
-		    kForm := fmt.Sprintf("%dk", kFactor)
+			for index := range m3u8Info {
+				info[m3u8Info[index][1]] = m3u8Info[index][2]
+			}
 
-		    if strings.HasPrefix(line, "master") {
-		    	line = strings.Replace(masterPlaybackUrl, "master.m3u8", line, -1)
-		    }
+		} else if strings.HasPrefix(line, "master") || strings.HasPrefix(line, "http") {
 
-		    info["STREAM-URL"] = line
-		    info["K-FORM"] = kForm
-		    key := fmt.Sprintf("hls-%d", kFactor)
-		    videoFormats[key] = helper.CopyMap(info)
-                    videoFormatKeys = append(videoFormatKeys, kFactor)
+			averageBandwidthOrBandwidth := func() int {
+				var bw string
+				if info["AVERAGE-BANDWIDTH"] != nil {
+					bw = info["AVERAGE-BANDWIDTH"].(string)
+				} else {
+					bw = info["BANDWIDTH"].(string)
+				}
+				var bwInt, _ = strconv.Atoi(bw)
+				return bwInt
+			}()
 
-		    for k := range info {
-		    	delete(info, k)
-		    }
+			kFactor := averageBandwidthOrBandwidth / 1000
 
-		}else{
-		    //do nothing
+			kForm := fmt.Sprintf("%dk", kFactor)
+
+			if strings.HasPrefix(line, "master") {
+				line = strings.Replace(masterPlaybackUrl, "master.m3u8", line, -1)
+			}
+
+			info["STREAM-URL"] = line
+			info["K-FORM"] = kForm
+			key := fmt.Sprintf("hls-%d", kFactor)
+			videoFormats[key] = helper.CopyMap(info)
+			videoFormatKeys = append(videoFormatKeys, kFactor)
+
+			for k := range info {
+				delete(info, k)
+			}
+
+		} else {
+			//do nothing
 		}
-		
+
 	}
 	if err := scanner.Err(); err != nil {
-	   // handle error
-	   panic(err)
+		// handle error
+		panic(err)
 	}
-         
-        /*
-	for k := range videoFormats {
-		trimmedKey := strings.TrimPrefix(k, "hls-")
-		if intKey, err := strconv.Atoi(trimmedKey); err == nil {
-			keys = append(keys, intKey)
+
+	/*
+		for k := range videoFormats {
+			trimmedKey := strings.TrimPrefix(k, "hls-")
+			if intKey, err := strconv.Atoi(trimmedKey); err == nil {
+				keys = append(keys, intKey)
+			}
+
 		}
-			
-	}
-        */
+	*/
 	sort.Ints(videoFormatKeys) //keys)
 
 	return videoFormats, videoFormatKeys
-	
+
 }
