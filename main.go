@@ -9,11 +9,12 @@ import (
     "github.com/temp25/hdl/urlretriever"
     //"text/tabwriter"
     "github.com/temp25/hdl/videoutil"
+    "net/url"
 
     //"bytes"
     //"io"
     //"os/exec"
-    //"log"
+    "log"
     //"reflect"
     //"strconv"
     //"time"
@@ -115,18 +116,64 @@ func main() {
         fmt.Println("Url must be provided at end before options")
         flag.Usage()
         os.Exit(-1)
-    } else if !urlretriever.IsValidHotstarUrl(flag.Args()[0]) {
-        fmt.Println("Invalid hotstar url")
-        os.Exit(-1)
-    } else if *listFormatsFlag {
-        videoutil.ListFormatsOrDownloadVideo(false, flag.Args()[0], *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
-    } else if *formatFlag != "" {
+    } else if videoUrl := flag.Args()[0]; videoUrl != "" {
+        parsedUrl, err := url.Parse(videoUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	switch parsedUrl.Scheme {
+	    case "": 
+	                fmt.Println("Replacing empty url scheme with https")
+	                parsedUrl.Scheme = "https"
+	    case "https":
+	                //do nothing
+	    case "http" : 
+	                fmt.Println("Replacing http url scheme with https")
+	                parsedUrl.Scheme = "https"
+	   default : 
+	           fmt.Println("Invalid url scheme please enter valid one")
+	           os.Exit(-1)
+	}
+	
+        /*
+        fmt.Println("parsedUrl.Scheme :", parsedUrl.Scheme)
+	fmt.Println("parsedUrl.Opaque :", parsedUrl.Opaque)
+	fmt.Println("parsedUrl.User :", parsedUrl.User)
+	fmt.Println("parsedUrl.Host :", parsedUrl.Host)
+	fmt.Println("parsedUrl.Path :", parsedUrl.Path)
+	fmt.Println("parsedUrl.RawPath :", parsedUrl.RawPath)
+	fmt.Println("parsedUrl.ForceQuery :", parsedUrl.ForceQuery)
+	fmt.Println("parsedUrl.RawQuery :", parsedUrl.RawQuery)
+	fmt.Println("parsedUrl.Fragment :", parsedUrl.Fragment)
 
-        if !strings.HasPrefix(*formatFlag, "hls-") {
-            fmt.Println("Invalid format specified")
-            os.Exit(-1)
+        hostName := parsedUrl.Host
+        if !strings.HasSuffix(hostName, "hotstar.com") {
+           fmt.Print("Invalid host %s Please enter a valid hotstar url\n", hostName)
+           os.Exit(-1)
+        }
+        */
+
+	videoUrl = fmt.Sprintf("%v", parsedUrl)
+
+        fmt.Println("Parsed video url is", parsedUrl)
+        
+        isValidUrl, videoId := urlretriever.IsValidHotstarUrl(videoUrl)
+        if isValidUrl {
+           if *listFormatsFlag {
+              videoutil.ListFormatsOrDownloadVideo(false, videoUrl, videoId, *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
+           } else if *formatFlag != "" {
+              if !strings.HasPrefix(*formatFlag, "hls-") {
+                 fmt.Println("Invalid format specified")
+                 os.Exit(-1)
+              } else {
+                 videoutil.ListFormatsOrDownloadVideo(true, videoUrl, videoId, *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
+              }
+           } else {
+              //Check for other flags if associated with url if any
+           }
         } else {
-            videoutil.ListFormatsOrDownloadVideo(true, flag.Args()[0], *formatFlag, *ffmpegPathFlag, *outputFileNameFlag, *metadataFlag)
+            fmt.Println("Invalid hotstar url. Please enter a valid one")
+            os.Exit(-1)
         }
 
     } else {

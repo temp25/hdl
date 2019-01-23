@@ -8,7 +8,7 @@ import (
 	"github.com/temp25/hdl/helper"
 )
 
-func GetPlaybackUri(videoUrlPageContents string, videoUrl string) (string, map[string]string) {
+func GetPlaybackUri(videoUrlPageContents string, videoUrl string, videoId string) (string, map[string]string) {
 
 	var metadata = make(map[string]interface{})
 	appStateSearchRegex := *regexp.MustCompile(`<script>window.APP_STATE=(.+?)</script>`)
@@ -20,7 +20,7 @@ func GetPlaybackUri(videoUrlPageContents string, videoUrl string) (string, map[s
 
 		for k, _ := range result {
 			
-			videoId := helper.After(k, "/")
+			//videoId := helper.After(k, "/")
 			if len(videoId)!=0 && strings.Contains(videoUrl, videoId) {
 				
 				root := result[k].(map[string]interface{})
@@ -31,7 +31,8 @@ func GetPlaybackUri(videoUrlPageContents string, videoUrl string) (string, map[s
 				for contentKey, contentValue := range content {
 					metadata[contentKey] = contentValue
 				}
-
+                                //quit looping as we have got the required metdata
+                                break
 			}
 
 		}

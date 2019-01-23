@@ -20,6 +20,7 @@ func CopyMap(m map[string]interface{}) map[string]interface{} {
 	return cp
 }
 
+/*
 func After(value string, a string) string{
 	pos := strings.LastIndex(value, a)
 	if pos == -1 {
@@ -31,6 +32,7 @@ func After(value string, a string) string{
 	}
 	return value[adjustedPos:len(value)]
 }
+*/
 
 func PadZeroRight(num int64) int64 {
     tmp := fmt.Sprintf("%-13d", num)

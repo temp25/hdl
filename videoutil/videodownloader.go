@@ -12,11 +12,11 @@ import (
    "os/exec"
 )
 
-func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, format string, ffmpegLocation string, outputFileName string, metaDataFlag bool) {
+func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, videoId string, format string, ffmpegLocation string, outputFileName string, metaDataFlag bool) {
 
     videoUrlPageContents := helper.GetPageContents(videoUrl, false)
 
-    playbackUri, metadata := urlretriever.GetPlaybackUri(videoUrlPageContents, videoUrl)
+    playbackUri, metadata := urlretriever.GetPlaybackUri(videoUrlPageContents, videoUrl, videoId)
 	
     if metadata["drmProtected"] == "true" {
         fmt.Println("Error: The video is DRM Protected")
@@ -29,7 +29,7 @@ func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, format str
 
     masterPlaybackPageContents := helper.GetPageContents(masterPlaybackUrl, true)
 	
-    videoFormats := urlretriever.GetVideoFormats(masterPlaybackPageContents, masterPlaybackUrl)
+    videoFormats, keys := urlretriever.GetVideoFormats(masterPlaybackPageContents, masterPlaybackUrl)
 
     if !isOnlyDownload {
         //NewWriter(io.Writer, minWidth, tabWidth, padding, padchar, flags)
@@ -37,8 +37,9 @@ func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, format str
 
         fmt.Fprintln(tw, "format code\textension\tresolution\tbandwidth\tcodec & frame rate\t")
 
-        for k, v := range videoFormats {
-            v := v.(map[string]interface{})
+        for _, key := range keys {
+            k := fmt.Sprintf("hls-%d", key)
+            v := videoFormats[k].(map[string]interface{})
             if v["FRAME-RATE"] == nil {
                 fmt.Fprintf( tw, "%s\tmp4\t%s\t%s\t%s\n", k, v["RESOLUTION"].(string), v["K-FORM"].(string), v["CODECS"].(string) )
             } else {

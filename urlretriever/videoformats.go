@@ -10,11 +10,11 @@ import (
 	"sort"
 )
 
-func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string) map[string]interface{} {
+func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string) (map[string]interface{}, []int) {
 
 	videoFormats := make(map[string]interface{})
-	sortedVideoFormats := make(map[string]interface{})
-    info := make(map[string]interface{})
+        info := make(map[string]interface{})
+        videoFormatKeys := make([]int, 0, len(videoFormats))
 	scanner := bufio.NewScanner(strings.NewReader(masterPlaybackPageContents))
     m3u8InfoRegex := regexp.MustCompile(`([\w\-]+)\=([\w\-]+|"[^"]*")`)
 	
@@ -55,6 +55,7 @@ func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string
 		    info["K-FORM"] = kForm
 		    key := fmt.Sprintf("hls-%d", kFactor)
 		    videoFormats[key] = helper.CopyMap(info)
+                    videoFormatKeys = append(videoFormatKeys, kFactor)
 
 		    for k := range info {
 		    	delete(info, k)
@@ -69,8 +70,8 @@ func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string
 	   // handle error
 	   panic(err)
 	}
-
-	keys := make([]int, 0, len(videoFormats))
+         
+        /*
 	for k := range videoFormats {
 		trimmedKey := strings.TrimPrefix(k, "hls-")
 		if intKey, err := strconv.Atoi(trimmedKey); err == nil {
@@ -78,14 +79,9 @@ func GetVideoFormats(masterPlaybackPageContents string, masterPlaybackUrl string
 		}
 			
 	}
-	sort.Ints(keys)
+        */
+	sort.Ints(videoFormatKeys) //keys)
 
-	for _, key := range keys {
-		key := fmt.Sprintf("hls-%d", key)
-		value := videoFormats[key]
-		sortedVideoFormats[key] = value
-	}
-
-	return sortedVideoFormats
+	return videoFormats, videoFormatKeys
 	
 }
