@@ -72,7 +72,7 @@ func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, videoId st
 			}
 
 			if outputFileName == "" {
-				outputFileName = "Output.mp4"
+				outputFileName = fmt.Println(strings.Replace(metadata["title"], " ", "_", -1))
 			}
 
 			var stdoutBuf, stderrBuf bytes.Buffer
@@ -130,6 +130,8 @@ func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, videoId st
 			if errStdout != nil || errStderr != nil {
 				log.Fatal("failed to capture stdout or stderr\n")
 			}
+			
+			os.Exit(0)
 
 		} else {
 			fmt.Printf("The specified video format %s is not available. Specify existing format from the list", format)
