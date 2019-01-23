@@ -73,7 +73,7 @@ func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, videoId st
 			}
 
 			if outputFileName == "" {
-				outputFileName = fmt.Sprintf("%s", strings.Replace(metadata["title"], " ", "_", -1))
+				outputFileName = fmt.Sprintf("%s.mp4", strings.Replace(metadata["title"], " ", "_", -1))
 			}
 
 			var stdoutBuf, stderrBuf bytes.Buffer
