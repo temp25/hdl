@@ -9,8 +9,8 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"text/tabwriter"
-        "strings"
 )
 
 func ListFormatsOrDownloadVideo(isOnlyDownload bool, videoUrl string, videoId string, format string, ffmpegLocation string, outputFileName string, metaDataFlag bool) {
