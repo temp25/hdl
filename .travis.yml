@@ -5,7 +5,7 @@ go:
 
 before_install:
 - echo "Before install"
--ls -lah
+- ls -lah
 
 install:
 - echo "Install"
