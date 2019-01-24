@@ -40,9 +40,9 @@ func CountDigits(i int64) (count int64) {
 
 func GetDateStr(timeFloat64 float64) string {
 	timeMillis := int64(timeFloat64)
-        if CountDigits(timeMillis)==13 {
-	   timeMillis = PadZeroRight(timeMillis)
-        }
+	if CountDigits(timeMillis) == 13 {
+		timeMillis = PadZeroRight(timeMillis)
+	}
 	location, err := time.LoadLocation("Asia/Kolkata")
 	if err != nil {
 		panic(err)
