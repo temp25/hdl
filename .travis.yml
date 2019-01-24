@@ -8,8 +8,6 @@ install:
 
 script:
 - go test -v tests/*
-- go get github.com/mitchellh/gox 
-- gox -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
 before_deploy:
 - echo 'before deploy'
