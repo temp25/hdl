@@ -10,7 +10,7 @@ script:
 - go test -v tests/*
 
 before_deploy:
-- echo 'before deploy'
+- sh generateBinaries.sh
 
 deploy:
  provider: releases
