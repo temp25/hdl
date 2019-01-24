@@ -10,7 +10,8 @@ script:
 - go test -v tests/*
 
 before_deploy:
-- sh generateBinaries.sh
+- test $TRAVIS_TEST_RESULT = 0 \# check that build passed successfully 
+&& go get github.com/mitchellh/gox
 
 deploy:
  provider: releases
