@@ -10,8 +10,8 @@ script:
 - go test -v tests/*
 
 before_deploy:
-- test $TRAVIS_TEST_RESULT = 0 \# check that build passed successfully 
-&& go get github.com/mitchellh/gox
+# check that build passed successfully 
+- test $TRAVIS_TEST_RESULT = 0 && go get github.com/mitchellh/gox
 
 deploy:
  provider: releases
