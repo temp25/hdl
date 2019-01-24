@@ -4,7 +4,7 @@ go:
  - release
 
 script:
- - go test -v ./...
+ - go test -v ./tests
  - go get github.com/mitchellh/gox 
  - gox -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
