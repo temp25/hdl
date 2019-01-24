@@ -1,10 +1,13 @@
 language: go
 
 go: 
- - release
+ - stable
 
 install:
-- go get github.com/temp25/hdl
+ - go get github.com/temp25/hdl
+
+before_script:
+ - go get github.com/tcnksm/ghr
 
 script:
 - go test -v tests/*
