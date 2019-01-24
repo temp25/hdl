@@ -11,6 +11,9 @@ script:
 - go get github.com/mitchellh/gox 
 - gox -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
+before_deploy:
+- echo 'before deploy'
+
 deploy:
  provider: releases
  api_key: $GITHUB_TOKEN
