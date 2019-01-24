@@ -3,7 +3,18 @@ language: go
 go: 
  - release
 
+before_install:
+- echo "Before install"
+
+install:
+- echo "Install"
+
+
+before_script:
+ - echo "Before script"
+
 script:
+ - echo "Script"
  - go test -v ./tests
  - go get github.com/mitchellh/gox 
  - gox -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
