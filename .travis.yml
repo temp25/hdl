@@ -15,7 +15,7 @@ script:
 
 deploy:
  provider: script
- script: scripts/deploy.sh
+ script: "chmod +x scripts/deploy.sh && ./scripts/deploy.sh"
  api_key: $GITHUB_TOKEN
  skip_cleanup: true
  on:
