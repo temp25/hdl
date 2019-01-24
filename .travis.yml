@@ -12,7 +12,6 @@ install:
 - go get github.com/temp25/hdl
 - ls -lah
 
-
 before_script:
 - echo "Before script"
 - ls -lah
