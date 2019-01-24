@@ -4,8 +4,11 @@
   go get github.com/mitchellh/gox
   go get github.com/tcnksm/ghr
   gox -ldflags="-s -w" -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
-  eval "$(ghr $TRAVIS_TAG artifacts/*)"
-  ls -lah
+  echo $TRAVIS_TAG
+  goReleaseCmd = "ghr"$TRAVIS_TAG"artifacts/*"
+  echo $goReleaseCmd
+  eval $goReleaseCmd
+  #ls -lah
 #else
 #  travis_terminate 1
 #fi
