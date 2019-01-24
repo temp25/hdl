@@ -7,9 +7,7 @@ install:
 - go get github.com/temp25/hdl
 
 script:
-- echo "Script"
-- ls -lah
-- go test -v ./tests
+- go test -v tests/*
 - go get github.com/mitchellh/gox 
 - gox -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
