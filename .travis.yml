@@ -5,19 +5,24 @@ go:
 
 before_install:
 - echo "Before install"
+-ls -lah
 
 install:
 - echo "Install"
+- go get github.com/temp25/hdl
+- ls -lah
 
 
 before_script:
- - echo "Before script"
+- echo "Before script"
+- ls -lah
 
 script:
- - echo "Script"
- - go test -v ./tests
- - go get github.com/mitchellh/gox 
- - gox -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
+- echo "Script"
+- ls -lah
+- go test -v ./tests
+- go get github.com/mitchellh/gox 
+- gox -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
 
 deploy:
  provider: releases
