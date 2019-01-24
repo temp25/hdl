@@ -11,7 +11,7 @@ script:
 
 before_deploy:
 # check that build passed successfully 
-- test $TRAVIS_TEST_RESULT = 0 && sh generateBinaries.sh
+- test $TRAVIS_TEST_RESULT = 0 && chmod +x generateBinaries.sh && ./generateBinaries.sh
 
 deploy:
  provider: releases
