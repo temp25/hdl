@@ -3,18 +3,8 @@ language: go
 go: 
  - release
 
-before_install:
-- echo "Before install"
-- ls -lah
-
 install:
-- echo "Install"
 - go get github.com/temp25/hdl
-- ls -lah
-
-before_script:
-- echo "Before script"
-- ls -lah
 
 script:
 - echo "Script"
