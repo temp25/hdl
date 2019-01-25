@@ -5,7 +5,7 @@
   go get github.com/tcnksm/ghr
   gox -ldflags="-s -w" -output="artifacts/{{.Dir}}_{{.OS}}_{{.Arch}}"
   echo $TRAVIS_TAG
-  goReleaseCmd="ghr \""$TRAVIS_TAG"\" \"artifacts/\""
+  goReleaseCmd="ghr "$TRAVIS_TAG" artifacts/"
   echo $goReleaseCmd
   eval $goReleaseCmd
   #ls -lah
